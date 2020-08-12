@@ -1,16 +1,15 @@
 const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
-  name: "wordrelay-setting",
-  mode: "development", // 실서비스시 production
+  name: "GuGuDan-setting",
+  mode: "development",
   devtool: "eval",
   resolve: {
     extensions: [".js", ".jsx"],
   },
 
-  // input :: client.jsx, WordRelay.jsx
   entry: {
-    //   client.jsx에서 WordRelay.jsx를 import 하기 때문에 client.jsx만 entry에 넣어준다.
     app: ["./client"],
   },
 
@@ -20,16 +19,32 @@ module.exports = {
         test: /\.jsx?/,
         loader: "babel-loader",
         options: {
-          presets: ["@babel/preset-env", "@babel/preset-react"],
-          plugins: ["@babel/plugin-proposal-class-properties"],
+          presets: [
+            [
+              "@babel/preset-env",
+              {
+                targets: {
+                  browsers: ["> 1% in KR"], // github.com/browserslist 참조
+                },
+                debug: true,
+              },
+            ],
+            "@babel/preset-react",
+          ],
+          plugins: [
+            "@babel/plugin-proposal-class-properties",
+            // "react-hot-loader/babel",
+          ],
         },
       },
     ],
   },
 
-  // output :: app.js
+  plugins: [new webpack.LoaderOptionsPlugin({ debug: true })],
+
   output: {
     path: path.join(__dirname, "dist"),
     filename: "app.js",
+    publicPath: "/dist/",
   },
 };
